@@ -8,7 +8,7 @@ public class Register {
 	private static final String SALE = "sale";
 	private static final String RENTAL = "rental";
 	
-	private static final String MOVIE = "movie";
+	private static final String Cd = "Cd";
 	private static final String CD = "cd";
 	private static final String DVD = "dvd";
 	private static final String BOOK = "book";
@@ -23,42 +23,32 @@ public class Register {
 		
 		boolean addMore = true;
 		
+		ProductDatabase productDb = ProductDatabase.getDatabase();
+		productDb.generateProducts();
+		
 		while(addMore == true){
 			
-			String title = getTitleFromInput(scan);
-			Product product = getProductFromInput(scan, title);
-			addCategoriesFromInput(scan, product);
+			Product prod = getProductFromInput(productDb, scan);
 			
-			String saleRentalString;
-			do{
-				System.out.println("Sale or Rental? (sale\\rental):");
-				saleRentalString = scan.nextLine();
-			} while(!(saleRentalString.equals(SALE) || saleRentalString.equals(RENTAL)));
+			String saleRentalString = getTransactionFromInput(scan);
 			
-			if(saleRentalString.equals(SALE) ){
+			if(saleRentalString.equalsIgnoreCase(SALE) ){
+				Sale sale = new Sale(prod);
 				
-			} else if 
-			System.out.println("Enter length of rental in days: ");
-			int daysRented = scan.nextInt();
-			scan.nextLine(); //Consume new line TODO make this better
-			
-			MovieRental rental = null;
-			
-			switch(cat){
-				case CHILDRENS:
-					rental = new ChildrensMovieRental(movieTitle, cat, daysRented);
-					break;
-				case REGULAR:
-					rental = new RegularMovieRental(movieTitle, cat, daysRented);
-					break;
-				case NEW_RELEASE:
-					rental = new NewMovieRental(movieTitle, cat, daysRented);
+				customer.addSale(sale);
+				
+			} else if(saleRentalString.equalsIgnoreCase(RENTAL)){
+				System.out.println("Enter length of rental in days: ");
+				int daysRented = scan.nextInt();
+				scan.nextLine(); //Consume new line TODO make this better
+				
+				Rental rental = new Rental(prod, daysRented);
+				
+				customer.addRental(rental);
 			}
-			//TODO handle when rental is null
-			customer.addRental(rental);
 			
 			//TODO clean this up to handle incorrect entry
-			System.out.println("Add another rental? (yes\\no): ");
+			System.out.println("Add another item? (yes\\no): ");
 			if(!scan.nextLine().equals("yes")){
 				addMore = false;
 			}
@@ -73,43 +63,27 @@ public class Register {
 		scan.close();
 	}
 	
-	private static String getTitleFromInput(Scanner scan){
-		System.out.println("Enter title: ");
-		return scan.nextLine();
+	private static String getTransactionFromInput(Scanner scan){
+		String saleRentalString;
+		do{
+			System.out.println("Sale or Rental? (sale\\rental):");
+			saleRentalString = scan.nextLine();
+		} while(!(saleRentalString.equals(SALE) || saleRentalString.equals(RENTAL)));
+		return saleRentalString;
 	}
 	
-	private static Product getProductFromInput(Scanner scan, String title){
-		Product product = null;
-		while(product != null){
-			System.out.println("Enter product name: ");
-			String productName = scan.nextLine();
-			switch(productName){
-				case MOVIE:
-					product = new Movie(title);
-					break;
-				case CD:
-					product = new CD(title);
-					break;
-				case DVD:
-					product = new DVD(title);
-					break;
-				case BOOK:
-					product = new BOOK(title);
-					break;
-			}
+	private static Product getProductFromInput(ProductDatabase productDb, Scanner scan){
+		Product prod = null;
+		while(prod == null){
+			System.out.println("Enter product id: ");
+			int id = scan.nextInt();
+			scan.nextLine(); //Consume new line TODO make this better
+			
+			prod = productDb.getProduct(id);
 		}
-		return product;
+		return prod;
 	}
-	
-	private static void addCategoriesFromInput(Scanner scan, Product product){
-		System.out.println("Enter product category: ");
-		
-		String typeString = scan.nextLine();
-		while(!typeString.equals(DONE)){
-			product.addCategory(typeString);
-		}
-	}
-	
+
 }
 
 

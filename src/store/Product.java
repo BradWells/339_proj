@@ -5,9 +5,11 @@ public abstract class Product {
 	
 	public abstract String getTitle();
 	public abstract double getRentalPrice(int daysRented);
+	public abstract int getRentalPoints(int daysRented);
 	public abstract double getSellingPrice();
-	public abstract void addCategory(String categoryName);
 	public abstract int getId();
+	//Will have to cast
+	public abstract Object getCategories();
 	
 	public static int getNewId(){
 		_id++;

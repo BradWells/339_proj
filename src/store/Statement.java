@@ -26,23 +26,34 @@ public class Statement {
 
 	private double calculateTotalPrice() {
 		//TODO should this be moved?
-		ArrayList<Rental> rentals        = _customer.getRentals();
+		
 		double total = 0;
-        for(Rental rental : rentals){
+        for(Rental rental : _customer.getRentals()){
             total += rental.getPrice();
+        }
+        
+        for(Sale sale : _customer.getSales()){
+        	total+= sale.getPrice();
         }
         return total;
 	}
 
 	public String getReceipt() {
 		//TODO clean this up, possibly move more code around.
-        String      result               = "Rental Record for " + _customer.getName() + "\n";
+        String result = "Rental Record for " + _customer.getName() + "\n";
         
-		ArrayList<Rental> rentals        = _customer.getRentals();
-        for(Rental rental : rentals){
+        for(Rental rental : _customer.getRentals()){
             // show figures for this rental
-            result += "\t" + rental.getTitle() +
+            result += "\t" + rental.getProduct().getTitle() +
                       "\t" + String.valueOf(rental.getPrice()) + "\n";
+        }
+        
+        result += "Sales Record for " + _customer.getName() + "\n";
+        
+        for(Sale sale : _customer.getSales()){
+        	// show figures for this rental
+            result += "\t" + sale.getProduct().getTitle() +
+                      "\t" + String.valueOf(sale.getPrice()) + "\n";
         }
         
         // add footer lines
@@ -59,15 +70,33 @@ public class Statement {
 		sb.append("<!DOCTYPE html>");
 		
         sb.append("<body>");
+        
+        //Rentals
+        
         sb.append("Rental Record for ").append(_customer.getName()).append("<br>");
         
         sb.append("<table>");
-		ArrayList<Rental> rentals        = _customer.getRentals();
-        for(Rental rental : rentals){
+        
+        for(Rental rental : _customer.getRentals()){
         	sb.append("<tr>");
             // show figures for this rental
-            sb.append("<td>").append(rental.getTitle()).append("</td>");
+            sb.append("<td>").append(rental.getProduct().getTitle()).append("</td>");
             sb.append("<td>").append(String.valueOf(rental.getPrice())).append("</td>");
+            sb.append("</tr>");
+        }
+        sb.append("</table>");
+        
+        //Sales
+        
+        sb.append("Sales Record for ").append(_customer.getName()).append("<br>");
+        
+        sb.append("<table>");
+        
+        for(Sale sale : _customer.getSales()){
+        	sb.append("<tr>");
+            // show figures for this rental
+            sb.append("<td>").append(sale.getProduct().getTitle()).append("</td>");
+            sb.append("<td>").append(String.valueOf(sale.getPrice())).append("</td>");
             sb.append("</tr>");
         }
         sb.append("</table>");
