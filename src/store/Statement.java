@@ -1,6 +1,14 @@
 package store;
 import java.util.ArrayList;
 
+import store.strategy.DoublePointStrategy;
+import store.strategy.PercentOffPriceStrategy;
+import store.strategy.PointStrategy;
+import store.strategy.PriceStrategy;
+import store.strategy.RegularPointStrategy;
+import store.strategy.RegularPriceStrategy;
+import movie.Movie;
+
 
 public class Statement {
 	
@@ -15,27 +23,38 @@ public class Statement {
 	}
 
 	private int calculateTotalPoints() {
-		//TODO should this be moved?
-		ArrayList<Rental> rentals        = _customer.getRentals();
-		int points = 0;
-        for(Rental rental : rentals){
-            points += rental.getFrequentRenterPoints();
-        }
-        return points;
+		PointStrategy strategy;
+		boolean hasNewRelease = false;
+		for(Rental r : _customer.getRentals()){
+			r.getProduct().getCategories().contains(Movie.Category.NEW_RELEASE);
+		}
+		if(hasNewRelease 
+				&& _customer.getAge() >= 18
+				&& _customer.getAge() <= 22){
+			strategy = new DoublePointStrategy(_customer.getRentals());
+		}
+		else if(TODO){
+			strategy = new DoublePointStrategy(_customer.getRentals());
+		}
+		else{
+			strategy = new RegularPointStrategy(_customer.getRentals());
+		}
+		return strategy.calculateTotalPoints();
 	}
 
 	private double calculateTotalPrice() {
-		//TODO should this be moved?
-		
-		double total = 0;
-        for(Rental rental : _customer.getRentals()){
-            total += rental.getPrice();
-        }
-        
-        for(Sale sale : _customer.getSales()){
-        	total+= sale.getPrice();
-        }
-        return total;
+		PriceStrategy strategy;
+		int numRentals = _customer.getRentals().size();
+		if(numRentals>5){
+			strategy = new PercentOffPriceStrategy(_customer.getRentals(), _customer.getSales(), 50);
+		}
+		else if(numRentals>3){
+			strategy = new PercentOffPriceStrategy(_customer.getRentals(), _customer.getSales(), 80);
+		}
+		else{
+			strategy = new RegularPriceStrategy(_customer.getRentals(), _customer.getSales());
+		}
+		return strategy.calculateTotalPrice();
 	}
 
 	public String getReceipt() {

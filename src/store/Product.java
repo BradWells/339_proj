@@ -1,5 +1,7 @@
 package store;
 
+import java.util.ArrayList;
+
 public abstract class Product {
 	private static int _id = 0;
 	
@@ -9,7 +11,7 @@ public abstract class Product {
 	public abstract double getSellingPrice();
 	public abstract int getId();
 	//Will have to cast
-	public abstract Object getCategories();
+	public abstract ArrayList getCategories();
 	
 	public static int getNewId(){
 		_id++;

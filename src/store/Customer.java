@@ -3,11 +3,13 @@ import java.util.ArrayList;
 
 public class Customer {
     private String _name;
+    private int _age;
     private ArrayList<Rental> _rentals;
     private ArrayList<Sale> _sales;
     
-    public Customer (String name) {
+    public Customer (String name, int age) {
         _name = name;
+        _age = age;
         _sales = new ArrayList<Sale>();
         _rentals = new ArrayList<Rental>();
     }
@@ -22,6 +24,10 @@ public class Customer {
     
     public String getName() {
         return _name;
+    }
+    
+    public int getAge(){
+    	return _age;
     }
     
     public ArrayList<Rental> getRentals(){

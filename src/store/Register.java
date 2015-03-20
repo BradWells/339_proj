@@ -19,7 +19,12 @@ public class Register {
 		
 		System.out.println("Enter customer name: ");
 		String custName = scan.nextLine();
-		Customer customer = new Customer(custName);
+		
+		System.out.println("Enter customer age: ");
+		int custAge = scan.nextInt();
+		scan.nextLine();
+		
+		Customer customer = new Customer(custName, custAge);
 		
 		boolean addMore = true;
 		
