@@ -1,12 +1,16 @@
 package store;
 import java.util.ArrayList;
 
+import cd.Cd;
+import dvd.Dvd;
+import book.Book;
 import store.strategy.DoublePointStrategy;
 import store.strategy.PercentOffPriceStrategy;
 import store.strategy.PointStrategy;
 import store.strategy.PriceStrategy;
 import store.strategy.RegularPointStrategy;
 import store.strategy.RegularPriceStrategy;
+import video_game.VideoGame;
 import movie.Movie;
 
 
@@ -33,13 +37,45 @@ public class Statement {
 				&& _customer.getAge() <= 22){
 			strategy = new DoublePointStrategy(_customer.getRentals());
 		}
-		else if(TODO){
-			strategy = new DoublePointStrategy(_customer.getRentals());
-		}
 		else{
-			strategy = new RegularPointStrategy(_customer.getRentals());
+			int numProductTypes = countRentalProductTypes(_customer.getRentals());
+			if(numProductTypes > 2){
+				strategy = new DoublePointStrategy(_customer.getRentals());
+			}
+			else {
+				strategy = new RegularPointStrategy(_customer.getRentals());
+			}
 		}
 		return strategy.calculateTotalPoints();
+	}
+
+	//This is a pretty hacky way to count the number of Product subclasses in a list of Rentals
+	private int countRentalProductTypes(ArrayList<Rental> rentals) {
+		//initialized to false;
+		boolean[] productTypes = new boolean[5];
+		
+		for (Rental r : rentals) {
+	        if (Book.class.isInstance(r)) {
+	            productTypes[0] = true;
+	        }
+	        if (Cd.class.isInstance(r)) {
+	            productTypes[1] = true;
+	        }
+	        if (Dvd.class.isInstance(r)) {
+	            productTypes[2] = true;
+	        }
+	        if (Movie.class.isInstance(r)) {
+	            productTypes[3] = true;
+	        }
+	        if (VideoGame.class.isInstance(r)) {
+	            productTypes[4] = true;
+	        }
+	    }
+		int sum = 0;
+		for(boolean b : productTypes) {
+		    sum += b ? 1 : 0;
+		}
+		return sum;
 	}
 
 	private double calculateTotalPrice() {
