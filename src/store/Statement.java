@@ -5,7 +5,7 @@ import cd.Cd;
 import dvd.Dvd;
 import book.Book;
 import store.strategy.DoublePointStrategy;
-import store.strategy.PercentOffPriceStrategy;
+import store.strategy.PercentOffSalesStrategy;
 import store.strategy.PointStrategy;
 import store.strategy.PriceStrategy;
 import store.strategy.RegularPointStrategy;
@@ -82,10 +82,10 @@ public class Statement {
 		PriceStrategy strategy;
 		int numRentals = _customer.getRentals().size();
 		if(numRentals>5){
-			strategy = new PercentOffPriceStrategy(_customer.getRentals(), _customer.getSales(), 50);
+			strategy = new PercentOffSalesStrategy(_customer.getRentals(), _customer.getSales(), 50);
 		}
 		else if(numRentals>3){
-			strategy = new PercentOffPriceStrategy(_customer.getRentals(), _customer.getSales(), 80);
+			strategy = new PercentOffSalesStrategy(_customer.getRentals(), _customer.getSales(), 80);
 		}
 		else{
 			strategy = new RegularPriceStrategy(_customer.getRentals(), _customer.getSales());
